@@ -1,0 +1,8 @@
+import type {CriterionKey,Job,ScoreValue} from './types';
+export const criterionLabels:Record<CriterionKey,string>={formation:'Formation',technique:'Compétences techniques',experience:'Expérience',motivation:'Motivation',disponibilite:'Disponibilité',salaire:'Prétentions salariales'};
+export const defaultWeights:Record<CriterionKey,number>={formation:25,technique:30,experience:20,motivation:10,disponibilite:5,salaire:10};
+export function weightsAreValid(w:Record<CriterionKey,number>){return Object.values(w).every(n=>Number.isFinite(n)&&n>=0)&&Object.values(w).reduce((a,b)=>a+b,0)===100;}
+export function calculateScore(scores:Record<CriterionKey,ScoreValue>,job:Job){const active=Object.entries(job.weights).filter(([k,w])=>w>0&&scores[k as CriterionKey]!==null);if(!active.length)return null;return Math.round(active.reduce((s,[k,w])=>s+((scores[k as CriterionKey] as number)/10*w),0)*10)/10;}
+export function isFullyEvaluated(scores:Record<CriterionKey,ScoreValue>,job:Job){return (Object.keys(job.weights) as CriterionKey[]).every(k=>job.weights[k]===0||scores[k]!==null);}
+export function recommendation(score:number|null,job:Job,scores?:Record<CriterionKey,ScoreValue>){if(score===null||(scores&&!isFullyEvaluated(scores,job)))return 'Partiellement évalué';if(score>=job.thresholds.recommended)return 'Recommandé pour entretien';if(score>=job.thresholds.review)return 'À étudier';return 'Proposé au rejet';}
+export function sortCandidates<T extends {score:number|null;scores:Record<CriterionKey,ScoreValue>;appliedAt:string}>(items:T[]){return [...items].sort((a,b)=>(b.score??-1)-(a.score??-1)||((b.scores.technique??-1)-(a.scores.technique??-1))||((b.scores.experience??-1)-(a.scores.experience??-1))||a.appliedAt.localeCompare(b.appliedAt));}

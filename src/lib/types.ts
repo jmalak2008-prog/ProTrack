@@ -1,0 +1,10 @@
+export type Role = 'Administratrice' | 'Responsable RH' | 'Responsable concerné';
+export type Stage = 'Nouvelle candidature'|'Présélection'|'En attente d’évaluation'|'Entretien programmé'|'Entretien réalisé'|'Décision finale'|'Acceptée'|'Rejetée';
+export type CriterionKey = 'formation'|'technique'|'experience'|'motivation'|'disponibilite'|'salaire';
+export type ScoreValue = number | null;
+export type Candidate = {id:string;name:string;email:string;phone:string;city:string;role:string;jobId:string;stage:Stage;appliedAt:string;skills:string[];education:string;experience:number;languages:string[];score:number|null;scores:Record<CriterionKey,ScoreValue>;strengths:string[];gaps:string[];notes:string;cvName:string;source:string;history:{stage:Stage;date:string;author:string}[]};
+export type Job = {id:string;title:string;department:string;location:string;description:string;education:string;skills:string[];experience:number;availability:string;requirements:string;status:'Ouverte'|'Brouillon'|'Clôturée';publishedAt:string;deadline:string;weights:Record<CriterionKey,number>;thresholds:{recommended:number;review:number}};
+export type Interview = {id:string;candidateId:string;jobId:string;date:string;time:string;type:string;participants:string[];status:'Prévu'|'Réalisé'|'Annulé';report:string};
+export type Evaluation = {id:string;candidateId:string;jobId:string;author:string;date:string;ratings:Record<CriterionKey,ScoreValue>;comment:string};
+export type Activity = {id:string;title:string;detail:string;date:string;kind:string};
+export type AppData = {jobs:Job[];candidates:Candidate[];interviews:Interview[];evaluations:Evaluation[];activities:Activity[]};
